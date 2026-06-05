@@ -1,0 +1,76 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 68% 5%; /* #040d15 */
+    --foreground: 210 40% 98%;
+    --card: 212 59% 9%; /* #071628 */
+    --card-foreground: 210 40% 98%;
+    --popover: 212 59% 7%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 15%;
+    --input: 217.2 32.6% 15%;
+    --ring: 224.3 76.3% 48%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+.font-body {
+  font-family: 'Barlow', sans-serif;
+}
+
+.font-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+.font-mono {
+  font-family: 'DM Mono', monospace;
+}
+
+/* Custom Metric Colors */
+.text-metric-blue { color: #3b82f6; }
+.text-metric-orange { color: #f59e0b; }
+.text-metric-red { color: #ef4444; }
+.text-metric-purple { color: #a855f7; }
+.text-metric-green { color: #10b981; }
+
+.bg-metric-blue-soft { background-color: rgba(59, 130, 246, 0.1); }
+.bg-metric-green-soft { background-color: rgba(16, 185, 129, 0.1); }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
