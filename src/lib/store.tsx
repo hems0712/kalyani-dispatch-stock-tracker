@@ -111,6 +111,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const firestore = useFirestore();
 
   useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsPreviewMode(false);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  useEffect(() => {
     setHasMounted(true);
     const savedUser = localStorage.getItem('dispatch_user');
     const cachedStocks = localStorage.getItem('cached_factory_stocks');
