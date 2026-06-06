@@ -174,17 +174,6 @@ function DispatchModule() {
     );
   }
 
- Replace this:
-typescript  return (
-    <div className="flex flex-col h-full w-full p-4 gap-4 overflow-hidden">
-With this:
-typescript  const totalPlan = stocks.reduce((sum, s) => sum + (calculatePartMetrics(s).planned || 0), 0);
-  const totalV1 = stocks.reduce((sum, s) => sum + (Number(s.v1Load) || 0) + (Number(s.v1Shipped) || 0), 0);
-  const totalV2 = stocks.reduce((sum, s) => sum + (Number(s.v2Load) || 0) + (Number(s.v2Shipped) || 0), 0);
-  const totalV3 = stocks.reduce((sum, s) => sum + (Number(s.v3Load) || 0) + (Number(s.v3Shipped) || 0), 0);
-  const totalDisp = stocks.reduce((sum, s) => sum + (Number(s.shippedQuantity) || 0) + (Number(s.v1Load) || 0) + (Number(s.v2Load) || 0) + (Number(s.v3Load) || 0), 0);
-  const totalPending = stocks.reduce((sum, s) => sum + (calculatePartMetrics(s).pending || 0), 0);
-
   return (
     <div className="flex flex-col h-full w-full p-4 gap-4 overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0 sticky top-0 z-30 bg-[#030712] pb-2">
@@ -236,16 +225,7 @@ typescript  const totalPlan = stocks.reduce((sum, s) => sum + (calculatePartMetr
                       <TableCell className="text-center font-black text-lg text-metric-purple font-headline p-0">{m.planned || '—'}</TableCell>
                       <TableCell className="text-center font-black text-base text-cyan-400 font-headline p-0">
                         {v1Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v1Val} {vehicleStatuses?.v1Load?.isDispatched && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}</span> : '—'}
-                       <TableRow className="border-t-2 border-white/20 bg-black/60 h-10 sticky bottom-0 z-10">
-                  <TableCell className="text-center text-[9px] font-black text-slate-400 uppercase tracking-widest p-0" colSpan={2}>TOTALS</TableCell>
-                  <TableCell className="text-center font-black text-lg text-metric-purple font-headline p-0">{totalPlan || '—'}</TableCell>
-                  <TableCell className="text-center font-black text-base text-cyan-400 font-headline p-0">{totalV1 || '—'}</TableCell>
-                  <TableCell className="text-center font-black text-base text-yellow-400 font-headline p-0">{totalV2 || '—'}</TableCell>
-                  <TableCell className="text-center font-black text-base text-red-400 font-headline p-0">{totalV3 || '—'}</TableCell>
-                  <TableCell className="text-center font-black text-lg text-emerald-400 font-headline p-0">{totalDisp || '—'}</TableCell>
-                  <TableCell className="text-right px-4 font-black text-lg text-red-500 font-headline p-0">{totalPending || '—'}</TableCell>
-                </TableRow>
-              </TableBody>
+                      </TableCell>
                       <TableCell className="text-center font-black text-base text-yellow-400 font-headline p-0">
                         {v2Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v2Val} {vehicleStatuses?.v2Load?.isDispatched && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}</span> : '—'}
                       </TableCell>
