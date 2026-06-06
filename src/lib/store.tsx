@@ -151,7 +151,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const unsubParts = onSnapshot(collection(firestore, 'parts'), (snapshot) => {
       setStocks(prev => {
-        const remoteData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as any));
+        const remoteData = snapshot.docs.map(doc => ({ ...doc.data(), partNumber: doc.id, id: doc.id } as any));
         const next = prev.map(localPart => {
           const remotePart = remoteData.find(rp => rp.partNumber === localPart.partNumber);
           return remotePart ? { ...localPart, ...remotePart } : localPart;
