@@ -47,8 +47,7 @@ function StockCard({
 
   return (
     <Card className={cn(
-      "border-border bg-card rounded-2xl overflow-hidden shadow-xl transition-all border-2 hover:border-primary/30",
-      isReadOnly && "opacity-80"
+      "border-border bg-card rounded-2xl overflow-hidden shadow-xl transition-all border-2 hover:border-primary/30"
     )}>
       <CardHeader className="py-3 px-4 border-b border-border bg-accent">
         <CardTitle className="flex justify-between items-center">
