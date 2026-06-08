@@ -85,7 +85,7 @@ function StockCard({
               onFocus={() => { isFocusedRef.current = true; }}
               onBlur={() => { isFocusedRef.current = false; }}
               onChange={handleChange}
-              className="h-12 pl-10 text-3xl font-black text-center bg-muted font-headline border-border rounded-xl focus-visible:ring-primary text-foreground"
+              className="h-12 pl-10 text-3xl font-black text-center bg-black/60 font-headline border-white/10 rounded-xl focus-visible:ring-primary text-white disabled:!text-white disabled:opacity-100"
             />
           </div>
         </div>
