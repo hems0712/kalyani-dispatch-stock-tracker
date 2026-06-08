@@ -146,7 +146,7 @@ function VehicleCard({
                 ))}
               </SelectContent>
             </Select>
-            <Input type="number" placeholder="QTY" value={qty || ""} onChange={(e) => setQty(parseInt(e.target.value) || 0)} onKeyDown={handleKeyDown}
+            <Input type="number" min={0} placeholder="QTY" value={qty || ""} onChange={(e) => setQty(parseInt(e.target.value) || 0)} onKeyDown={handleKeyDown}
               className="h-9 w-16 text-center text-sm font-black bg-black/40 border-white/10 text-white rounded-lg focus-visible:ring-primary font-headline"
             />
             <Button size="icon" onClick={handleAdd} className="h-9 w-9 bg-primary text-white hover:bg-primary/90 rounded-lg">
