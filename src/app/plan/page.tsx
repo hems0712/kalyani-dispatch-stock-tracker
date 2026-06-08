@@ -116,6 +116,7 @@ function PlanModule() {
                     <TableCell className="text-center p-0">
                       <Input 
                         type="number" 
+                        min={0}
                         value={stock.v1Plan || ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v1Plan', parseInt(e.target.value) || 0)}
