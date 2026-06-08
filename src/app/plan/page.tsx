@@ -117,7 +117,7 @@ function PlanModule() {
                       <Input 
                         type="number" 
                         min={0}
-                        value={stock.v1Plan || ""} 
+                        value={stock.v1Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v1Plan', parseInt(e.target.value) || 0)}
                         className="h-10 w-20 mx-auto text-xl font-black text-center bg-black/40 border-white/10 rounded-lg focus-visible:ring-primary text-white font-headline"
@@ -127,7 +127,7 @@ function PlanModule() {
                       <Input 
                         type="number" 
                         min={0}
-                        value={stock.v2Plan || ""} 
+                        value={stock.v2Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v2Plan', parseInt(e.target.value) || 0)}
                         className="h-10 w-20 mx-auto text-xl font-black text-center bg-black/40 border-white/10 rounded-lg focus-visible:ring-primary text-white font-headline"
@@ -137,7 +137,7 @@ function PlanModule() {
                       <Input 
                         type="number" 
                         min={0}
-                        value={stock.v3Plan || ""} 
+                        value={stock.v3Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v3Plan', parseInt(e.target.value) || 0)}
                         className="h-10 w-20 mx-auto text-xl font-black text-center bg-black/40 border-white/10 rounded-lg focus-visible:ring-primary text-white font-headline"
