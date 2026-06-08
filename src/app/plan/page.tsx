@@ -44,11 +44,12 @@ function PlanModule() {
     });
   };
 
-  const handleVehicleUpdate = (partNumber: string, vehicleKey: 'v1Plan' | 'v2Plan' | 'v3Plan', value: number) => {
-    if (isReadOnly) return;
-    const stock = stocks.find(s => s.partNumber === partNumber);
-    if (!stock) return;
-    const newValues = { ...stock, [vehicleKey]: value };
+ const handleVehicleUpdate = (partNumber: string, vehicleKey: 'v1Plan' | 'v2Plan' | 'v3Plan', value: number) => {
+  if (isReadOnly) return;
+  const validValue = Math.max(0, value);
+  const stock = stocks.find(s => s.partNumber === partNumber);
+  if (!stock) return;
+  const newValues = { ...stock, [vehicleKey]: validValue };
     const newTotal = (Number(newValues.v1Plan) || 0) + (Number(newValues.v2Plan) || 0) + (Number(newValues.v3Plan) || 0);
     updateStock(partNumber, { ...newValues, plannedDispatch: newTotal });
   };
