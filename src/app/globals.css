@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222.2 84% 12%; /* Professional Dark Blue */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 15%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 94%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 92%;
+    --muted-foreground: 215.4 16.3% 35%; /* Dark Gray */
+    --accent: 210 40% 94%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 85%;
+    --input: 214.3 31.8% 85%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 222.2 47% 7%; /* Slightly lighter than pure black for visibility */
+    --foreground: 210 40% 98%;
+    --card: 222.2 47% 12%; /* Noticeably lighter than background for card separation */
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 47% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 226 70% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217.2 32.6% 15%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 18%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 20%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 22%;
+    --input: 217.2 32.6% 22%;
+    --ring: 226 70% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+.font-body {
+  font-family: 'Barlow', sans-serif;
+}
+
+.font-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+.font-mono {
+  font-family: 'DM Mono', monospace;
+}
+
+/* Professional Industrial Metric Colors - Synchronized */
+/* V1/V3 = Sky Blue | V2/V4 = Light Orange (Yellow Shade) */
+.text-metric-plan { color: #6366f1; } 
+.text-metric-v1 { color: #0ea5e9; }   
+.text-metric-v2 { color: #f59e0b; }   
+.text-metric-v3 { color: #0ea5e9; }   
+.text-metric-v4 { color: #f59e0b; }   
+.text-metric-disp { color: #10b981; } 
+.text-metric-pdi { color: #3b82f6; }  
+.text-metric-pending { color: #f43f5e; } 
+
+.bg-metric-plan { background-color: #6366f1; }
+.bg-metric-v1 { background-color: #0ea5e9; }
+.bg-metric-v2 { background-color: #f59e0b; }
+.bg-metric-v3 { background-color: #0ea5e9; }
+.bg-metric-v4 { background-color: #f59e0b; }
+.bg-metric-disp { background-color: #10b981; }
+.bg-metric-pdi { background-color: #3b82f6; }
+.bg-metric-pending { background-color: #f43f5e; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 10px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.3);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
