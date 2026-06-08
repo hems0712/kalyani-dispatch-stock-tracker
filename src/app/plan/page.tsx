@@ -123,7 +123,7 @@ function PlanModule() {
                         value={stock.v1Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v1Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline"
+                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -133,7 +133,7 @@ function PlanModule() {
                         value={stock.v2Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v2Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline"
+                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -143,7 +143,7 @@ function PlanModule() {
                         value={stock.v3Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v3Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline"
+                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -153,7 +153,7 @@ function PlanModule() {
                         value={stock.v4Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v4Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline"
+                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
