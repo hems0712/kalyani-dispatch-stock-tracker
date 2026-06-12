@@ -118,8 +118,8 @@ function VehicleCard({
 
           {isDispatched && (
             <div className="flex justify-center w-full animate-in fade-in slide-in-from-top-1">
-              <span className="text-sm text-emerald-500 font-black flex items-center gap-2 uppercase tracking-[0.2em] bg-emerald-500/10 px-4 py-1.5 rounded-lg border border-emerald-500/30 shadow-sm whitespace-nowrap">
-                <CheckCircle2 className="w-4 h-4" /> SHIPPED @ {dispatchedAt}
+              <span className="text-xl text-emerald-500 font-black flex items-center gap-2 uppercase tracking-[0.2em] bg-emerald-500/10 px-4 py-1.5 rounded-lg border border-emerald-500/30 shadow-sm whitespace-nowrap">
+                <CheckCircle2 className="w-5 h-5" /> SHIPPED @ {dispatchedAt}
               </span>
             </div>
           )}
@@ -197,6 +197,18 @@ function DispatchModule() {
     );
   }
 
+  const tableTotals = stocks.reduce((acc, stock) => {
+    const m = calculatePartMetrics(stock);
+    acc.plan += m.planned;
+    acc.v1 += (Number(stock.v1Load) || 0) + (Number(stock.v1Shipped) || 0);
+    acc.v2 += (Number(stock.v2Load) || 0) + (Number(stock.v2Shipped) || 0);
+    acc.v3 += (Number(stock.v3Load) || 0) + (Number(stock.v3Shipped) || 0);
+    acc.v4 += (Number(stock.v4Load) || 0) + (Number(stock.v4Shipped) || 0);
+    acc.totalDisp += (Number(stock.shippedQuantity) || 0) + (Number(stock.v1Load) || 0) + (Number(stock.v2Load) || 0) + (Number(stock.v3Load) || 0) + (Number(stock.v4Load) || 0);
+    acc.pending += m.pending;
+    return acc;
+  }, { plan: 0, v1: 0, v2: 0, v3: 0, v4: 0, totalDisp: 0, pending: 0 });
+
   return (
     <div className="flex flex-col h-full w-full p-4 gap-4 overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0 sticky top-0 z-30 bg-background pb-1">
@@ -261,7 +273,7 @@ function DispatchModule() {
                         {v3Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v3Val} {vehicleStatuses?.v3Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
                       </TableCell>
                       <TableCell className="text-center font-black text-lg text-metric-v4 font-headline p-0">
-                        {v4Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v4Val} {vehicleStatuses?.v4Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
+                        {v4Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v4Val} {vehicleStatuses?.v2Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
                       </TableCell>
                       <TableCell className="text-center font-black text-xl text-metric-disp font-headline p-0">{totalDisp || '—'}</TableCell>
                       <TableCell className="text-right px-4 font-black text-xl text-metric-pending font-headline p-0">{m.pending || '—'}</TableCell>
@@ -269,6 +281,19 @@ function DispatchModule() {
                   );
                 })}
               </TableBody>
+              <tfoot className="bg-muted border-t-2 border-border sticky bottom-0 z-10">
+                <TableRow className="hover:bg-transparent h-10">
+                  <TableCell className="p-0"></TableCell>
+                  <TableCell className="px-4 font-headline font-black text-xs text-muted-foreground uppercase p-0">SHIFT TOTALS</TableCell>
+                  <TableCell className="text-center font-black text-xl text-metric-plan font-headline p-0">{tableTotals.plan}</TableCell>
+                  <TableCell className="text-center font-black text-xl text-metric-v1 font-headline p-0">{tableTotals.v1}</TableCell>
+                  <TableCell className="text-center font-black text-xl text-metric-v2 font-headline p-0">{tableTotals.v2}</TableCell>
+                  <TableCell className="text-center font-black text-xl text-metric-v3 font-headline p-0">{tableTotals.v3}</TableCell>
+                  <TableCell className="text-center font-black text-xl text-metric-v4 font-headline p-0">{tableTotals.v4}</TableCell>
+                  <TableCell className="text-center font-black text-2xl text-metric-disp font-headline p-0">{tableTotals.totalDisp}</TableCell>
+                  <TableCell className="text-right px-4 font-black text-2xl text-metric-pending font-headline p-0">{tableTotals.pending}</TableCell>
+                </TableRow>
+              </tfoot>
             </Table>
           </div>
         </div>

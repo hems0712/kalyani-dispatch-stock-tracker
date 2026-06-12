@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useApp, calculatePartMetrics, type PartStock } from '@/lib/store';
@@ -6,7 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { Save, CheckCircle2, Lock, Unlock, History, Loader2 } from 'lucide-react';
+import { History, Lock, Unlock, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -33,8 +32,12 @@ function PlanModule() {
     acc.plan += m.planned;
     acc.dispatched += m.shipped;
     acc.pending += m.pending;
+    acc.v1Plan += Number(stock.v1Plan) || 0;
+    acc.v2Plan += Number(stock.v2Plan) || 0;
+    acc.v3Plan += Number(stock.v3Plan) || 0;
+    acc.v4Plan += Number(stock.v4Plan) || 0;
     return acc;
-  }, { plan: 0, dispatched: 0, pending: 0 });
+  }, { plan: 0, dispatched: 0, pending: 0, v1Plan: 0, v2Plan: 0, v3Plan: 0, v4Plan: 0 });
 
   const handleSave = () => {
     if (isReadOnly) return;
@@ -90,18 +93,18 @@ function PlanModule() {
 
       <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col shadow-2xl">
         <div className="overflow-y-auto flex-1 custom-scrollbar">
-          <Table className="table-fixed min-w-[1000px]">
+          <Table className="table-fixed min-w-[1200px]">
             <TableHeader className="bg-muted sticky top-0 z-20 border-b border-border shadow-md">
               <TableRow className="hover:bg-transparent h-10">
                 <TableHead className="font-black uppercase text-[8px] text-muted-foreground text-center w-[40px] p-0">SL</TableHead>
                 <TableHead className="font-black uppercase text-[8px] text-muted-foreground px-4 w-[160px] p-0">PART IDENTIFICATION</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-v1 text-center p-0">Vehicle-1</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-v2 text-center p-0">Vehicle-2</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-v3 text-center p-0">Vehicle-3</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-v4 text-center p-0">Vehicle-4</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-plan text-center p-0">TARGET</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-disp text-center p-0">SHIPPED</TableHead>
-                <TableHead className="font-black uppercase text-[8px] text-metric-pending text-center p-0">PENDING</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-v1 text-center w-[120px] p-0">Vehicle-1</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-v2 text-center w-[120px] p-0">Vehicle-2</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-v3 text-center w-[120px] p-0">Vehicle-3</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-v4 text-center w-[120px] p-0">Vehicle-4</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-plan text-center w-[100px] p-0">TARGET</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-disp text-center w-[100px] p-0">SHIPPED</TableHead>
+                <TableHead className="font-black uppercase text-[8px] text-metric-pending text-center w-[100px] p-0">PENDING</TableHead>
                 <TableHead className="font-black uppercase text-[8px] text-muted-foreground text-right px-4 p-0">STATUS</TableHead>
               </TableRow>
             </TableHeader>
@@ -109,7 +112,7 @@ function PlanModule() {
               {stocks.map((stock, index) => {
                 const m = calculatePartMetrics(stock);
                 return (
-                  <TableRow key={stock.partNumber} className="hover:bg-accent border-b border-border last:border-0 transition-colors h-[38px]">
+                  <TableRow key={stock.partNumber} className="hover:bg-accent border-b border-border last:border-0 transition-colors h-[42px]">
                     <TableCell className="text-center text-[10px] font-black text-slate-700 font-headline p-0">
                       {index + 1}
                     </TableCell>
@@ -123,7 +126,7 @@ function PlanModule() {
                         value={stock.v1Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v1Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
+                        className="h-9 w-[100px] mx-auto text-xl font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -133,7 +136,7 @@ function PlanModule() {
                         value={stock.v2Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v2Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
+                        className="h-9 w-[100px] mx-auto text-xl font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -143,7 +146,7 @@ function PlanModule() {
                         value={stock.v3Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v3Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
+                        className="h-9 w-[100px] mx-auto text-xl font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -153,7 +156,7 @@ function PlanModule() {
                         value={stock.v4Plan ?? ""} 
                         disabled={isReadOnly}
                         onChange={(e) => handleVehicleUpdate(stock.partNumber, 'v4Plan', parseInt(e.target.value) || 0)}
-                        className="h-7 w-16 mx-auto text-base font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
+                        className="h-9 w-[100px] mx-auto text-xl font-black text-center bg-muted border-border rounded-md focus-visible:ring-primary text-foreground font-headline disabled:!text-foreground disabled:opacity-100"
                       />
                     </TableCell>
                     <TableCell className="text-center p-0">
@@ -177,20 +180,30 @@ function PlanModule() {
                           size="icon" 
                           variant="ghost" 
                           onClick={() => setSelectedPartForHistory(stock)}
-                          className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
                          >
                            <History className="w-4 h-4" />
                          </Button>
-                         <div className="flex items-center gap-1.5 text-[8px] font-black text-slate-700 uppercase tracking-widest">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                          AUTH
-                        </div>
                       </div>
                     </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
+            <tfoot className="bg-muted border-t-2 border-border sticky bottom-0 z-20">
+              <TableRow className="hover:bg-transparent h-12">
+                <TableCell className="p-0"></TableCell>
+                <TableCell className="px-4 font-headline font-black text-sm text-muted-foreground uppercase p-0">TOTAL PLAN</TableCell>
+                <TableCell className="text-center font-black text-xl text-metric-v1 font-headline p-0">{totals.v1Plan}</TableCell>
+                <TableCell className="text-center font-black text-xl text-metric-v2 font-headline p-0">{totals.v2Plan}</TableCell>
+                <TableCell className="text-center font-black text-xl text-metric-v3 font-headline p-0">{totals.v3Plan}</TableCell>
+                <TableCell className="text-center font-black text-xl text-metric-v4 font-headline p-0">{totals.v4Plan}</TableCell>
+                <TableCell className="text-center font-black text-2xl text-metric-plan font-headline p-0">{totals.plan}</TableCell>
+                <TableCell className="text-center font-black text-2xl text-metric-disp font-headline p-0">{totals.dispatched}</TableCell>
+                <TableCell className="text-center font-black text-2xl text-metric-pending font-headline p-0">{totals.pending}</TableCell>
+                <TableCell className="p-0"></TableCell>
+              </TableRow>
+            </tfoot>
           </Table>
         </div>
       </div>

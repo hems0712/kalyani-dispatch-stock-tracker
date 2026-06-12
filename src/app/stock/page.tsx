@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useApp, type PartStock } from '@/lib/store';
@@ -106,7 +105,7 @@ function StockCard({
               onFocus={() => { isFocusedRef.current = true; }}
               onBlur={() => { isFocusedRef.current = false; }}
               onChange={handleChange}
-              className="h-12 pl-10 text-3xl font-black text-center bg-black/60 font-headline border-white/10 rounded-xl focus-visible:ring-primary text-white disabled:!text-white disabled:opacity-100"
+              className="h-12 pl-4 pr-4 text-3xl font-black text-center bg-black/60 font-headline border-white/10 rounded-xl focus-visible:ring-primary text-white disabled:!text-white disabled:opacity-100"
             />
           </div>
         </div>
@@ -140,7 +139,7 @@ function StockDataModule() {
   useEffect(() => { setIsMounted(true); }, []);
 
   const handleScanInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.toUpperCase().trim();
+    const val = e.target.value.toUpperCase().trim();
     setScanValue(val);
 
     const matchingPart = stocks.find(s => s.partNumber === val);
