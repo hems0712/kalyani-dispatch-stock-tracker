@@ -8,6 +8,7 @@
       "properties": {
         "partNumber": { "type": "string" },
         "pdiStock": { "type": "integer" },
+        "binCount": { "type": "integer" },
         "plannedDispatch": { "type": "integer" },
         "v1Plan": { "type": "integer" },
         "v2Plan": { "type": "integer" },
@@ -29,6 +30,17 @@
             "properties": {
               "timestamp": { "type": "string" },
               "quantity": { "type": "integer" }
+            }
+          }
+        },
+        "stockHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "timestamp": { "type": "string" },
+              "binCount": { "type": "integer" },
+              "pdiStock": { "type": "integer" }
             }
           }
         }

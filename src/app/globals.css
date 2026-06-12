@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +6,7 @@
 @layer base {
   :root {
     --background: 210 20% 98%;
-    --foreground: 222.2 84% 12%; /* Professional Dark Blue */
+    --foreground: 222.2 84% 12%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 15%;
     --popover: 0 0% 100%;
@@ -15,7 +16,7 @@
     --secondary: 210 40% 94%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 92%;
-    --muted-foreground: 215.4 16.3% 35%; /* Dark Gray */
+    --muted-foreground: 215.4 16.3% 35%;
     --accent: 210 40% 94%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
@@ -27,11 +28,11 @@
   }
 
   .dark {
-    --background: 222.2 47% 7%; /* Slightly lighter than pure black for visibility */
+    --background: 222 47% 10%;
     --foreground: 210 40% 98%;
-    --card: 222.2 47% 12%; /* Noticeably lighter than background for card separation */
+    --card: 222 47% 15%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 47% 12%;
+    --popover: 222 47% 15%;
     --popover-foreground: 210 40% 98%;
     --primary: 226 70% 55%;
     --primary-foreground: 0 0% 100%;
@@ -70,8 +71,6 @@
   font-family: 'DM Mono', monospace;
 }
 
-/* Professional Industrial Metric Colors - Synchronized */
-/* V1/V3 = Sky Blue | V2/V4 = Light Orange (Yellow Shade) */
 .text-metric-plan { color: #6366f1; } 
 .text-metric-v1 { color: #0ea5e9; }   
 .text-metric-v2 { color: #f59e0b; }   
@@ -90,7 +89,6 @@
 .bg-metric-pdi { background-color: #3b82f6; }
 .bg-metric-pending { background-color: #f43f5e; }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

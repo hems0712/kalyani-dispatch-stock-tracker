@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useApp, calculatePartMetrics } from '@/lib/store';
@@ -21,7 +22,7 @@ export function KPICards() {
     { label: "TOTAL PLAN", value: metrics.plan, color: 'text-metric-plan', border: 'border-t-metric-plan' },
     { label: 'DISPATCH', value: metrics.dispatched, color: 'text-metric-disp', border: 'border-t-metric-disp' },
     { label: 'PENDING', value: metrics.pending, color: 'text-metric-pending', border: 'border-t-metric-pending' },
-    { label: "TOTAL PDI STOCK", value: metrics.pdi, color: 'text-metric-pdi', border: 'border-t-metric-pdi' },
+    { label: "RFD STOCK", value: metrics.pdi, color: 'text-metric-pdi', border: 'border-t-metric-pdi' },
     { label: 'SHORTAGE', value: metrics.shortage > 0 ? metrics.shortage : 0, color: 'text-metric-pending', border: 'border-t-metric-pending' },
   ];
 
@@ -33,7 +34,7 @@ export function KPICards() {
           card.border
         )}>
           <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-            <span className={cn("text-4xl font-black font-headline leading-none tracking-tight drop-shadow-sm", card.color)}>
+            <span className={cn("text-4xl font-black font-headline leading-none tracking-tight drop-shadow-md", card.color)}>
               {card.value.toLocaleString()}
             </span>
             <p className="text-[10px] font-black font-headline uppercase tracking-[0.25em] text-muted-foreground mt-3">{card.label}</p>

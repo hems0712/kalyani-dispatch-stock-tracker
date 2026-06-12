@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
@@ -20,6 +21,13 @@ export interface PlanRevision {
   quantity: number;
 }
 
+export interface StockRevision {
+  timestamp: string;
+  binCount: number;
+  pdiStock: number;
+  type?: 'ENTRY' | 'COMMIT';
+}
+
 export interface PartStock {
   id: string;
   partNumber: string;
@@ -40,6 +48,7 @@ export interface PartStock {
   v4Shipped: number;
   shippedQuantity: number;
   planHistory: PlanRevision[];
+  stockHistory: StockRevision[];
 }
 
 export interface VehicleStatus {
@@ -64,6 +73,7 @@ interface AppState {
   logout: () => void;
   updateStock: (partNumber: string, updates: Partial<PartStock>) => void;
   updateBinCount: (partNumber: string, binCount: number) => void;
+  saveStockData: () => Promise<void>;
   loadPartToVehicle: (partNumber: string, vehicleKey: VehicleKey, qty: number) => boolean;
   clearVehicle: (vehicleKey: VehicleKey) => void;
   dispatchVehicle: (vehicleKey: VehicleKey) => void;
@@ -106,7 +116,8 @@ const INITIAL_STOCKS: PartStock[] = PARTS_MASTER_LIST.map((p, index) => ({
   v3Shipped: 0,
   v4Shipped: 0,
   shippedQuantity: 0,
-  planHistory: []
+  planHistory: [],
+  stockHistory: []
 }));
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -184,7 +195,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const remoteData = snapshot.docs.map(doc => ({ ...doc.data(), partNumber: doc.id, id: doc.id } as any));
         const next = prev.map(localPart => {
           const remotePart = remoteData.find(rp => rp.partNumber === localPart.partNumber);
-          return remotePart ? { ...localPart, ...remotePart } : localPart;
+          return remotePart ? { 
+            ...localPart, 
+            ...remotePart,
+            planHistory: remotePart.planHistory || localPart.planHistory || [],
+            stockHistory: remotePart.stockHistory || localPart.stockHistory || []
+          } : localPart;
         });
         localStorage.setItem('cached_factory_stocks', JSON.stringify(next));
         return next;
@@ -267,25 +283,83 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const updateBinCount = (partNumber: string, binCount: number) => {
-    const multiplier = BIN_MULTIPLIERS[partNumber] || 1;
-    const totalStock = binCount * multiplier;
-    const updates = { binCount, pdiStock: totalStock };
-    setStocks(prev => prev.map(s => s.partNumber === partNumber ? { ...s, ...updates } : s));
-    if (user?.role === 'ADMIN' && firestore) {
-      setDoc(doc(firestore, 'parts', partNumber), updates, { merge: true })
-        .catch(() => {
-          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `parts/${partNumber}`, operation: 'update', requestResourceData: updates }));
-        });
+    const validatedBinCount = Math.max(0, binCount);
+    setStocks(prev => prev.map(s => s.partNumber === partNumber ? { ...s, binCount: validatedBinCount } : s));
+  };
+
+  const saveStockData = async () => {
+    if (user?.role !== 'ADMIN' || !firestore) return;
+    
+    const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    const batch = writeBatch(firestore);
+    
+    const updates = stocks.map(s => {
+      const addedBins = s.binCount || 0;
+      if (addedBins === 0) return null;
+
+      const multiplier = BIN_MULTIPLIERS[s.partNumber] || 1;
+      const addedQty = addedBins * multiplier;
+      
+      const newPdiStock = (Number(s.pdiStock) || 0) + addedQty;
+      const newHistory = [...(s.stockHistory || []), { 
+        timestamp: time, 
+        binCount: addedBins, 
+        pdiStock: addedQty, 
+        type: 'COMMIT' as const 
+      }].slice(-10);
+
+      return { 
+        partNumber: s.partNumber, 
+        pdiStock: newPdiStock,
+        binCount: 0,
+        stockHistory: newHistory 
+      };
+    }).filter(u => u !== null);
+
+    if (updates.length === 0) {
+      toast({ title: "No Entry", description: "Enter bin counts before saving." });
+      return;
+    }
+
+    setStocks(prev => prev.map(s => {
+      const update = updates.find(u => u?.partNumber === s.partNumber);
+      return update ? { 
+        ...s, 
+        pdiStock: update.pdiStock,
+        binCount: 0,
+        stockHistory: update.stockHistory 
+      } : s;
+    }));
+
+    updates.forEach(up => {
+      if (!up) return;
+      batch.set(doc(firestore, 'parts', up.partNumber), {
+        pdiStock: up.pdiStock,
+        binCount: 0,
+        stockHistory: up.stockHistory
+      }, { merge: true });
+    });
+
+    try {
+      await batch.commit();
+      toast({ title: "Inventory Saved", description: "Stock levels updated and reset." });
+    } catch (e: any) {
+      errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'parts', operation: 'write' }));
     }
   };
 
   const loadPartToVehicle = (partNumber: string, vehicleKey: VehicleKey, qty: number) => {
+    const validatedQty = Math.max(0, qty);
     const existing = stocks.find(s => s.partNumber === partNumber);
-    if (!existing || (Number(existing.pdiStock) || 0) < qty) return false;
+    if (!existing) return false;
+
+    const currentlyLoadedTotal = (Number(existing.v1Load) || 0) + (Number(existing.v2Load) || 0) + (Number(existing.v3Load) || 0) + (Number(existing.v4Load) || 0);
+    const freeStock = (Number(existing.pdiStock) || 0) - currentlyLoadedTotal;
+
+    if (validatedQty > freeStock) return false;
     
     const updates = { 
-      pdiStock: (Number(existing.pdiStock) || 0) - qty, 
-      [vehicleKey]: (Number(existing[vehicleKey]) || 0) + qty 
+      [vehicleKey]: (Number(existing[vehicleKey]) || 0) + validatedQty 
     };
     
     setStocks(prev => prev.map(s => s.partNumber === partNumber ? { ...s, ...updates } : s));
@@ -304,7 +378,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const nextStocks = stocks.map(s => {
       const loadQty = Number(s[vehicleKey]) || 0;
       if (loadQty > 0) {
-        const updates = { pdiStock: (Number(s.pdiStock) || 0) + loadQty, [vehicleKey]: 0 };
+        const updates = { [vehicleKey]: 0 };
         updatesList.push({ partNumber: s.partNumber, updates });
         return { ...s, ...updates };
       }
@@ -317,7 +391,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     if (user?.role === 'ADMIN' && firestore) {
       const batch = writeBatch(firestore);
-      updatesList.forEach(item => batch.update(doc(firestore, 'parts', item.partNumber), item.updates));
+      updatesList.forEach(item => batch.set(doc(firestore, 'parts', item.partNumber), item.updates, { merge: true }));
       batch.commit().catch(() => {
         errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'parts', operation: 'write' }));
       });
@@ -325,7 +399,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const dispatchVehicle = (vehicleKey: VehicleKey) => {
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+    const now = new Date();
+    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     const updatesList: { partNumber: string, updates: any }[] = [];
     
     const nextStocks = stocks.map(s => {
@@ -333,6 +408,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (loadQty > 0) {
         const shippedKey = vehicleKey.replace('Load', 'Shipped') as 'v1Shipped' | 'v2Shipped' | 'v3Shipped' | 'v4Shipped';
         const updates = { 
+          pdiStock: Math.max(0, (Number(s.pdiStock) || 0) - loadQty),
           shippedQuantity: (Number(s.shippedQuantity) || 0) + loadQty, 
           [shippedKey]: (Number(s[shippedKey]) || 0) + loadQty, 
           [vehicleKey]: 0 
@@ -351,7 +427,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (user?.role === 'ADMIN' && firestore) {
       const batch = writeBatch(firestore);
       batch.set(doc(firestore, 'settings', 'vehicles'), { [vehicleKey]: { isDispatched: true, dispatchedAt: time } }, { merge: true });
-      updatesList.forEach(item => batch.update(doc(firestore, 'parts', item.partNumber), item.updates));
+      updatesList.forEach(item => batch.set(doc(firestore, 'parts', item.partNumber), item.updates, { merge: true }));
       batch.commit().catch(() => {
         errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'dispatch', operation: 'write' }));
       });
@@ -366,9 +442,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const shippedQty = Number(s[shippedKey]) || 0;
       if (shippedQty > 0) {
         const updates = { 
+          pdiStock: (Number(s.pdiStock) || 0) + shippedQty,
           shippedQuantity: Math.max(0, (Number(s.shippedQuantity) || 0) - shippedQty), 
-          [shippedKey]: 0, 
-          pdiStock: (Number(s.pdiStock) || 0) + shippedQty 
+          [shippedKey]: 0,
+          [vehicleKey]: shippedQty 
         };
         updatesList.push({ partNumber: s.partNumber, updates });
         return { ...s, ...updates };
@@ -384,7 +461,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (user?.role === 'ADMIN' && firestore) {
       const batch = writeBatch(firestore);
       batch.set(doc(firestore, 'settings', 'vehicles'), { [vehicleKey]: { isDispatched: false, dispatchedAt: null } }, { merge: true });
-      updatesList.forEach(item => batch.update(doc(firestore, 'parts', item.partNumber), item.updates));
+      updatesList.forEach(item => batch.set(doc(firestore, 'parts', item.partNumber), item.updates, { merge: true }));
       batch.commit().catch(() => {
         errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'recall', operation: 'write' }));
       });
@@ -399,6 +476,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       
       stocks.forEach(s => {
         const resetUpdates = {
+          pdiStock: 0,
+          binCount: 0,
           plannedDispatch: 0,
           v1Plan: 0,
           v2Plan: 0,
@@ -413,9 +492,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           v3Shipped: 0,
           v4Shipped: 0,
           shippedQuantity: 0,
-          planHistory: []
+          planHistory: [],
+          stockHistory: []
         };
-        batch.update(doc(firestore, 'parts', s.partNumber), resetUpdates);
+        batch.set(doc(firestore, 'parts', s.partNumber), resetUpdates, { merge: true });
       });
 
       batch.set(doc(firestore, 'settings', 'vehicles'), DEFAULT_VEHICLE_STATUSES);
@@ -425,17 +505,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
       
       setStocks(prev => prev.map(s => ({ 
         ...s, 
+        pdiStock: 0, binCount: 0,
         plannedDispatch: 0, v1Plan: 0, v2Plan: 0, v3Plan: 0, v4Plan: 0,
         v1Load: 0, v2Load: 0, v3Load: 0, v4Load: 0,
         v1Shipped: 0, v2Shipped: 0, v3Shipped: 0, v4Shipped: 0,
-        shippedQuantity: 0, planHistory: [] 
+        shippedQuantity: 0, planHistory: [], stockHistory: []
       })));
       setVehicleStatuses(DEFAULT_VEHICLE_STATUSES);
       
-      toast({ title: "System Reset", description: "Daily dispatch data cleared successfully." });
+      toast({ title: "System Reset", description: "All data cleared successfully." });
     } catch (e) {
-      console.error(e);
-      toast({ variant: "destructive", title: "Reset Failed", description: "Terminal error during data wipe." });
+      toast({ variant: "destructive", title: "Reset Failed", description: "Terminal synchronization error." });
     }
   };
 
@@ -448,6 +528,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       logout, 
       updateStock, 
       updateBinCount,
+      saveStockData,
       loadPartToVehicle, 
       clearVehicle, 
       dispatchVehicle, 

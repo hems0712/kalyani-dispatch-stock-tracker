@@ -1,4 +1,6 @@
+
 {
   "name": "Kalyani Dispatch Stock Tracker",
-  "description": "Real-time stock traceability and dispatch planning system for modern factory floors."
+  "description": "Real-time stock traceability and dispatch planning system for modern factory floors.",
+  "repository": "https://github.com/hems0712/kalyani-dispatch-stock-tracker.git"
 }

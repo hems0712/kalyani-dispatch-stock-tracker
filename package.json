@@ -1,8 +1,9 @@
+
 {
   "name": "kalyani-dispatch-stock-tracker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
-  "description": "Real-time factory floor stock traceability and dispatch planning system for Kalyani Gujarat.",
+  "description": "Real-time factory floor stock traceability and dispatch planning system for Kalyani Dispatch.",
   "repository": {
     "type": "git",
     "url": "https://github.com/hems0712/kalyani-dispatch-stock-tracker.git"

@@ -1,4 +1,5 @@
-# Kalyani Gujarat Dispatch Stock Tracker
+
+# Kalyani Dispatch Stock Tracker
 
 Real-time stock traceability and dispatch planning system for modern factory floors.
 

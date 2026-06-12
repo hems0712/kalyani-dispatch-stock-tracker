@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useApp, calculatePartMetrics, type PartStock } from '@/lib/store';
@@ -74,83 +75,89 @@ function VehicleCard({
 
   return (
     <Card className={cn(
-      "overflow-hidden bg-card border-border shadow-2xl transition-all rounded-xl flex flex-col border h-[210px]",
+      "overflow-hidden bg-card border-border shadow-2xl transition-all rounded-xl flex flex-col border h-[240px]",
       isDispatched ? "border-emerald-500/30 ring-1 ring-emerald-500/5" : "border-border"
     )}>
-      <CardHeader className="p-2 border-b border-border bg-accent/50 shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <Truck className={cn("w-3 h-3", vehicleColorClass)} />
-              <h3 className={cn("font-headline font-black uppercase text-[10px] tracking-[0.15em] leading-none", vehicleColorClass)}>Vehicle {vehicleNum}</h3>
+      <CardHeader className="p-3 border-b border-border bg-accent/50 shrink-0">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 shrink-0">
+              <Truck className={cn("w-4 h-4", vehicleColorClass)} />
+              <h3 className={cn("font-headline font-black uppercase text-sm tracking-[0.15em] leading-none", vehicleColorClass)}>
+                Vehicle {vehicleNum}
+              </h3>
             </div>
-            {isDispatched && (
-              <span className="text-[6px] text-emerald-500 font-black flex items-center gap-1 uppercase tracking-widest mt-0.5">
-                <CheckCircle2 className="w-1.5 h-1.5" /> SHIPPED @ {dispatchedAt}
+
+            <div className="flex gap-1 shrink-0">
+              {!isReadOnly && (
+                <>
+                  {isDispatched ? (
+                    <Button 
+                      size="sm" variant="outline" onClick={() => recallVehicle(loadKey)}
+                      className="border-red-500/30 text-red-500 hover:bg-red-500/10 text-[9px] font-black uppercase h-7 px-3 rounded-md"
+                    >
+                      RECALL
+                    </Button>
+                  ) : (
+                    <Button 
+                      size="sm" onClick={() => currentLoadParts.length > 0 ? dispatchVehicle(loadKey) : toast({ variant: "destructive", title: "Empty Payload", description: "Add parts before dispatching." })}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 text-[9px] font-black uppercase h-7 px-4 rounded-md shadow-lg"
+                    >
+                      DISPATCH
+                    </Button>
+                  )}
+                  <Button size="icon" variant="outline" onClick={() => clearVehicle(loadKey)} disabled={isDispatched}
+                    className="h-7 w-7 rounded-md border-border text-muted-foreground hover:bg-red-500/10 hover:text-red-500"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {isDispatched && (
+            <div className="flex justify-center w-full animate-in fade-in slide-in-from-top-1">
+              <span className="text-sm text-emerald-500 font-black flex items-center gap-2 uppercase tracking-[0.2em] bg-emerald-500/10 px-4 py-1.5 rounded-lg border border-emerald-500/30 shadow-sm whitespace-nowrap">
+                <CheckCircle2 className="w-4 h-4" /> SHIPPED @ {dispatchedAt}
               </span>
-            )}
-          </div>
-          <div className="flex gap-1">
-            {!isReadOnly && (
-              <>
-                {isDispatched ? (
-                  <Button 
-                    size="sm" variant="outline" onClick={() => recallVehicle(loadKey)}
-                    className="border-red-500/30 text-red-500 hover:bg-red-500/10 text-[7px] font-black uppercase h-5 px-1.5 rounded-md"
-                  >
-                    RECALL
-                  </Button>
-                ) : (
-                  <Button 
-                    size="sm" onClick={() => currentLoadParts.length > 0 ? dispatchVehicle(loadKey) : toast({ variant: "destructive", title: "Empty Payload", description: "Add parts before dispatching." })}
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 text-[7px] font-black uppercase h-5 px-2 rounded-md shadow-lg"
-                  >
-                    DISPATCH
-                  </Button>
-                )}
-                <Button size="icon" variant="outline" onClick={() => clearVehicle(loadKey)} disabled={isDispatched}
-                  className="h-5 w-5 rounded-md border-border text-muted-foreground hover:bg-red-500/10 hover:text-red-500"
-                >
-                  <Trash2 className="w-2.5 h-2.5" />
-                </Button>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </CardHeader>
       
-      <CardContent className="p-2 space-y-1.5 flex flex-col flex-1 min-h-0">
-        <div className="flex-1 min-h-0 bg-muted/30 rounded-lg p-1.5 border border-border shadow-inner overflow-y-auto custom-scrollbar">
+      <CardContent className="p-3 space-y-2 flex flex-col flex-1 min-h-0">
+        <div className="flex-1 min-h-0 bg-muted/30 rounded-lg p-2 border border-border shadow-inner overflow-y-auto custom-scrollbar">
           {displayParts.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
               {displayParts.map(p => (
-                <div key={p.partNumber} className="flex items-center gap-1 py-0.5 border-b border-border/50 last:border-0 hover:bg-accent px-1 rounded transition-colors">
-                  <span className="font-headline font-black text-xs text-metric-pdi leading-none uppercase whitespace-nowrap">
+                <div key={p.partNumber} className="flex items-center gap-1.5 py-1 border-b border-border/50 last:border-0 hover:bg-accent px-1.5 rounded transition-colors">
+                  <span className="font-headline font-black text-sm text-metric-pdi leading-none uppercase whitespace-nowrap">
                     {p.partNumber}:
                   </span>
-                  <span className="font-headline font-black text-xs text-emerald-500 leading-none whitespace-nowrap">
+                  <span className="font-headline font-black text-sm text-emerald-500 leading-none whitespace-nowrap">
                     {p[displayKey]} Qty.
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center italic text-[7px] text-muted-foreground uppercase font-black tracking-widest opacity-30">
-              Empty
+            <div className="h-full flex flex-col items-center justify-center italic text-[9px] text-muted-foreground uppercase font-black tracking-widest opacity-30">
+              Empty Load
             </div>
           )}
         </div>
 
         {!isDispatched && !isReadOnly && (
-          <div className="pt-1.5 border-t border-border flex gap-1.5 shrink-0 items-center">
-            <div className="flex-1 flex gap-1 min-w-0">
+          <div className="pt-2 border-t border-border flex gap-2 shrink-0 items-center">
+            <div className="flex-1 flex gap-2 min-w-0">
               <Select onValueChange={setSelectedPart} value={selectedPart}>
-                <SelectTrigger className="w-[60%] h-7 text-[9px] font-black bg-muted border-border text-foreground rounded-md px-2 uppercase font-headline">
+                <SelectTrigger className="w-[60%] h-8 text-[10px] font-black bg-muted border-border text-foreground rounded-md px-3 uppercase font-headline">
                   <SelectValue placeholder="PART" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border text-foreground">
                   {stocks.map(s => (
-                    <SelectItem key={s.partNumber} value={s.partNumber} className="text-[10px] font-black">
+                    <SelectItem key={s.partNumber} value={s.partNumber} className="text-[11px] font-black">
                       {s.partNumber} ({s.pdiStock})
                     </SelectItem>
                   ))}
@@ -162,11 +169,11 @@ function VehicleCard({
                 value={qty || ""} 
                 onChange={(e) => setQty(parseInt(e.target.value) || 0)} 
                 onKeyDown={handleKeyDown}
-                className="w-[40%] h-7 text-center text-[9px] font-black bg-muted border-border text-foreground rounded-md focus-visible:ring-primary font-headline"
+                className="w-[40%] h-8 text-center text-[10px] font-black bg-muted border-border text-foreground rounded-md focus-visible:ring-primary font-headline"
               />
             </div>
-            <Button size="icon" onClick={handleAdd} className="h-7 w-7 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md shrink-0">
-              <Plus className="w-3.5 h-3.5" />
+            <Button size="icon" onClick={handleAdd} className="h-8 w-8 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md shrink-0">
+              <Plus className="w-4 h-4" />
             </Button>
           </div>
         )}
@@ -191,8 +198,8 @@ function DispatchModule() {
   }
 
   return (
-    <div className="flex flex-col h-full w-full p-3 gap-3 overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0 sticky top-0 z-30 bg-background pb-1">
+    <div className="flex flex-col h-full w-full p-4 gap-4 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0 sticky top-0 z-30 bg-background pb-1">
         <VehicleCard vehicleNum={1} loadKey="v1Load" stocks={stocks} status={vehicleStatuses?.v1Load} isReadOnly={isReadOnly}
           loadPartToVehicle={loadPartToVehicle} clearVehicle={clearVehicle} dispatchVehicle={dispatchVehicle} recallVehicle={recallVehicle} />
         <VehicleCard vehicleNum={2} loadKey="v2Load" stocks={stocks} status={vehicleStatuses?.v2Load} isReadOnly={isReadOnly}
@@ -203,10 +210,10 @@ function DispatchModule() {
           loadPartToVehicle={loadPartToVehicle} clearVehicle={clearVehicle} dispatchVehicle={dispatchVehicle} recallVehicle={recallVehicle} />
       </div>
 
-      <div className="flex-1 flex flex-col min-h-0 space-y-1">
+      <div className="flex-1 flex flex-col min-h-0 space-y-2">
         <div className="flex justify-between items-end px-1 shrink-0">
-          <h2 className="font-headline font-black uppercase text-sm tracking-tighter text-foreground">DISPATCH ACHIEVEMENT</h2>
-          <div className="flex gap-4 text-[7px] font-black uppercase tracking-widest text-muted-foreground">
+          <h2 className="font-headline font-black uppercase text-base tracking-tighter text-foreground">DISPATCH ACHIEVEMENT</h2>
+          <div className="flex gap-6 text-[8px] font-black uppercase tracking-widest text-muted-foreground">
             <span className={cn(vehicleStatuses?.v1Load?.isDispatched ? "text-emerald-500" : "text-metric-v1")}>V1: {vehicleStatuses?.v1Load?.isDispatched ? `SHIPPED` : 'AT DOCK'}</span>
             <span className={cn(vehicleStatuses?.v2Load?.isDispatched ? "text-emerald-500" : "text-metric-v2")}>V2: {vehicleStatuses?.v2Load?.isDispatched ? `SHIPPED` : 'AT DOCK'}</span>
             <span className={cn(vehicleStatuses?.v3Load?.isDispatched ? "text-emerald-500" : "text-metric-v3")}>V3: {vehicleStatuses?.v3Load?.isDispatched ? `SHIPPED` : 'AT DOCK'}</span>
@@ -218,16 +225,16 @@ function DispatchModule() {
           <div className="overflow-y-auto flex-1 custom-scrollbar">
             <Table className="table-fixed">
               <TableHeader className="bg-muted sticky top-0 z-10 border-b border-border shadow-md">
-                <TableRow className="hover:bg-transparent h-8">
-                  <TableHead className="font-black text-[8px] text-muted-foreground uppercase text-center w-[40px] p-0">SL</TableHead>
-                  <TableHead className="font-black text-[8px] text-muted-foreground uppercase px-4 p-0">PART IDENTIFICATION</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-plan uppercase text-center p-0">PLAN</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-v1 uppercase text-center p-0">V1</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-v2 uppercase text-center p-0">V2</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-v3 uppercase text-center p-0">V3</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-v4 uppercase text-center p-0">V4</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-disp uppercase text-center p-0">TOTAL</TableHead>
-                  <TableHead className="font-black text-[8px] text-metric-pending uppercase text-right px-4 p-0">PENDING</TableHead>
+                <TableRow className="hover:bg-transparent h-10">
+                  <TableHead className="font-black text-[9px] text-muted-foreground uppercase text-center w-[50px] p-0">SL</TableHead>
+                  <TableHead className="font-black text-[9px] text-muted-foreground uppercase px-4 p-0">PART IDENTIFICATION</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-plan uppercase text-center p-0">PLAN</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-v1 uppercase text-center p-0">V1</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-v2 uppercase text-center p-0">V2</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-v3 uppercase text-center p-0">V3</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-v4 uppercase text-center p-0">V4</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-disp uppercase text-center p-0">TOTAL</TableHead>
+                  <TableHead className="font-black text-[9px] text-metric-pending uppercase text-right px-4 p-0">PENDING</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -240,24 +247,24 @@ function DispatchModule() {
                   const totalDisp = (Number(stock.shippedQuantity) || 0) + (Number(stock.v1Load) || 0) + (Number(stock.v2Load) || 0) + (Number(stock.v3Load) || 0) + (Number(stock.v4Load) || 0);
 
                   return (
-                    <TableRow key={stock.partNumber} className="border-b border-border hover:bg-accent/30 h-[38px] transition-colors">
-                      <TableCell className="text-center text-[10px] font-black text-muted-foreground font-headline p-0">{index + 1}</TableCell>
-                      <TableCell className="font-headline font-black text-lg px-4 text-metric-pdi leading-none p-0">{stock.partNumber}</TableCell>
-                      <TableCell className="text-center font-black text-lg text-metric-plan font-headline p-0">{m.planned || '—'}</TableCell>
-                      <TableCell className="text-center font-black text-base text-metric-v1 font-headline p-0">
-                        {v1Val > 0 ? <span className="flex items-center justify-center gap-1">{v1Val} {vehicleStatuses?.v1Load?.isDispatched && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />}</span> : '—'}
+                    <TableRow key={stock.partNumber} className="border-b border-border hover:bg-accent/30 h-[45px] transition-colors">
+                      <TableCell className="text-center text-[11px] font-black text-muted-foreground font-headline p-0">{index + 1}</TableCell>
+                      <TableCell className="font-headline font-black text-xl px-4 text-metric-pdi leading-none p-0">{stock.partNumber}</TableCell>
+                      <TableCell className="text-center font-black text-xl text-metric-plan font-headline p-0">{m.planned || '—'}</TableCell>
+                      <TableCell className="text-center font-black text-lg text-metric-v1 font-headline p-0">
+                        {v1Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v1Val} {vehicleStatuses?.v1Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
                       </TableCell>
-                      <TableCell className="text-center font-black text-base text-metric-v2 font-headline p-0">
-                        {v2Val > 0 ? <span className="flex items-center justify-center gap-1">{v2Val} {vehicleStatuses?.v2Load?.isDispatched && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />}</span> : '—'}
+                      <TableCell className="text-center font-black text-lg text-metric-v2 font-headline p-0">
+                        {v2Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v2Val} {vehicleStatuses?.v2Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
                       </TableCell>
-                      <TableCell className="text-center font-black text-base text-metric-v3 font-headline p-0">
-                        {v3Val > 0 ? <span className="flex items-center justify-center gap-1">{v3Val} {vehicleStatuses?.v3Load?.isDispatched && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />}</span> : '—'}
+                      <TableCell className="text-center font-black text-lg text-metric-v3 font-headline p-0">
+                        {v3Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v3Val} {vehicleStatuses?.v3Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
                       </TableCell>
-                      <TableCell className="text-center font-black text-base text-metric-v4 font-headline p-0">
-                        {v4Val > 0 ? <span className="flex items-center justify-center gap-1">{v4Val} {vehicleStatuses?.v4Load?.isDispatched && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />}</span> : '—'}
+                      <TableCell className="text-center font-black text-lg text-metric-v4 font-headline p-0">
+                        {v4Val > 0 ? <span className="flex items-center justify-center gap-1.5">{v4Val} {vehicleStatuses?.v4Load?.isDispatched && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}</span> : '—'}
                       </TableCell>
-                      <TableCell className="text-center font-black text-lg text-metric-disp font-headline p-0">{totalDisp || '—'}</TableCell>
-                      <TableCell className="text-right px-4 font-black text-lg text-metric-pending font-headline p-0">{m.pending || '—'}</TableCell>
+                      <TableCell className="text-center font-black text-xl text-metric-disp font-headline p-0">{totalDisp || '—'}</TableCell>
+                      <TableCell className="text-right px-4 font-black text-xl text-metric-pending font-headline p-0">{m.pending || '—'}</TableCell>
                     </TableRow>
                   );
                 })}

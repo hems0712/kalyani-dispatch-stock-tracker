@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useApp, calculatePartMetrics, type PartStock } from '@/lib/store';
@@ -60,7 +61,6 @@ function PlanModule() {
 
   return (
     <div className="flex flex-col h-full w-full p-3 gap-3 overflow-hidden">
-      {/* STRICT FROZEN SUMMARY PANEL */}
       <div className="shrink-0 bg-card border border-border rounded-xl p-3 flex justify-between items-center shadow-2xl backdrop-blur-md sticky top-0 z-30">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
@@ -82,7 +82,7 @@ function PlanModule() {
             onClick={handleSave} 
             className="bg-metric-plan hover:bg-metric-plan/90 text-white font-black uppercase tracking-widest text-[9px] px-6 h-8 rounded-lg shadow-lg gap-2"
           >
-            <Save className="w-3.5 h-3.5" />
+            <History className="w-3.5 h-3.5" />
             SAVE PLAN
           </Button>
         )}

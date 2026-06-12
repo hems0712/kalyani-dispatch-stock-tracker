@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useApp, calculatePartMetrics } from '@/lib/store';
@@ -54,7 +55,7 @@ export function LiveDashboard() {
                 <TableHead className={cn(colWidths.v3, "font-black text-[8px] text-metric-v3 uppercase text-center p-0")}>V3</TableHead>
                 <TableHead className={cn(colWidths.v4, "font-black text-[8px] text-metric-v4 uppercase text-center p-0")}>V4</TableHead>
                 <TableHead className={cn(colWidths.totalDisp, "font-black text-[8px] text-metric-disp uppercase text-center p-0")}>TOTAL DISP.</TableHead>
-                <TableHead className={cn(colWidths.pdi, "font-black text-[8px] text-metric-pdi uppercase text-center p-0")}>PDI AREA</TableHead>
+                <TableHead className={cn(colWidths.pdi, "font-black text-[8px] text-metric-pdi uppercase text-center p-0")}>RFD STOCK</TableHead>
                 <TableHead className={cn(colWidths.pending, "font-black text-[8px] text-metric-pending uppercase text-center p-0")}>PENDING</TableHead>
                 <TableHead className={cn(colWidths.status, "font-black text-[8px] text-muted-foreground uppercase text-center p-0")}>STATUS</TableHead>
               </TableRow>
